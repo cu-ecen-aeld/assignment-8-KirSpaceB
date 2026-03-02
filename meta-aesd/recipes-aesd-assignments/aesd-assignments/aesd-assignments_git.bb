@@ -13,7 +13,7 @@ SRC_URI = "git://git@github.com/cu-ecen-aeld/assignments-3-and-later-KirSpaceB.g
 SRC_URI += "file://aesdsocket-init"
 PV = "1.0+git${SRCPV}"
 # TODO: set to reference a specific commit hash in your assignment repo
-SRCREV = "4f30734e093ec8182725e44fae134de0ca4f7ded"
+SRCREV = "f8b88aff2c960e41f3d62a840d1b31b0f6114f7a"
 # This sets your staging directory based on WORKDIR, where WORKDIR is defined at 
 # https://docs.yoctoproject.org/ref-manual/variables.html?highlight=workdir#term-WORKDIR
 # We reference the "server" directory here to build from the "server" directory

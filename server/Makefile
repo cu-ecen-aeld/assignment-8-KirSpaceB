@@ -1,11 +1,11 @@
 TARGET := aesdsocket
 SRCS := aesdsocket.c
 OBJS := $(SRCS:.c=.o)
-
 CROSS_COMPILE ?=
-
+CC ?= $(CROSS_COMPILE)gcc
 CFLAGS ?= -Wall -Wextra -O2
-LDFLAGS ?= -pthread -lrt
+LDFLAGS ?=
+LDFLAGS += -pthread -lrt
 
 all: $(TARGET)
 
@@ -19,4 +19,3 @@ clean:
 	rm -f $(TARGET) $(OBJS)
 
 .PHONY: all clean
-
