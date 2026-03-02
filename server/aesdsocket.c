@@ -395,6 +395,8 @@ int main(int argc, char *argv[]) {
     return 1;
   }
 
+  
+
   while (!g_exit_requested) {
     // accept() // I uncommented this accept function
     struct sockaddr_in client_addr;
