@@ -7,29 +7,35 @@
 
 #ifndef AESD_CHAR_DRIVER_AESDCHAR_H_
 #define AESD_CHAR_DRIVER_AESDCHAR_H_
-
-#define AESD_DEBUG 1  //Remove comment on this line to enable debug
-
-#undef PDEBUG             /* undef it, just in case */
-#ifdef AESD_DEBUG
-#  ifdef __KERNEL__
-     /* This one if debugging is on, and kernel space */
-#    define PDEBUG(fmt, args...) printk( KERN_DEBUG "aesdchar: " fmt, ## args)
-#  else
-     /* This one for user space */
-#    define PDEBUG(fmt, args...) fprintf(stderr, fmt, ## args)
-#  endif
-#else
-#  define PDEBUG(fmt, args...) /* not debugging: nothing */
+#include "aesd-circular-buffer.h"
+#ifdef __KERNEL__
+#include <linux/cdev.h>
+#include <linux/mutex.h>
 #endif
 
-struct aesd_dev
-{
-    /**
-     * TODO: Add structure(s) and locks needed to complete assignment requirements
-     */
-    struct cdev cdev;     /* Char device structure      */
-};
+#define AESD_DEBUG 1 // Remove comment on this line to enable debug
 
+#undef PDEBUG /* undef it, just in case */
+#ifdef AESD_DEBUG
+#ifdef __KERNEL__
+/* This one if debugging is on, and kernel space */
+#define PDEBUG(fmt, args...) printk(KERN_DEBUG "aesdchar: " fmt, ##args)
+#else
+/* This one for user space */
+#define PDEBUG(fmt, args...) fprintf(stderr, fmt, ##args)
+#endif
+#else
+#define PDEBUG(fmt, args...) /* not debugging: nothing */
+#endif
+
+struct aesd_dev {
+  /**
+   * TODO: Add structure(s) and locks needed to complete assignment requirements
+   */
+  struct cdev cdev; /* Char device structure      */
+  struct aesd_circular_buffer buffer;
+  struct mutex lock;
+  struct aesd_buffer_entry entry_in_progress;
+};
 
 #endif /* AESD_CHAR_DRIVER_AESDCHAR_H_ */

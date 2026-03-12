@@ -72,24 +72,31 @@ struct aesd_buffer_entry *aesd_circular_buffer_find_entry_offset_for_fpos(
  * add_entry must be allocated by and/or must have a lifetime managed by the
  * caller.
  */
-void aesd_circular_buffer_add_entry(struct aesd_circular_buffer *buffer,
-                                    const struct aesd_buffer_entry *add_entry) {
-  /**
-   * TODO: implement per description
-   */
-  // If buffer is full oldest entryo
+const char *
+aesd_circular_buffer_add_entry(struct aesd_circular_buffer *buffer,
+                               const struct aesd_buffer_entry *add_entry) {
+  const char *evicted = NULL;
+
+  // If buffer is full, the entry at in_offs is about to be overwritten
+  // save its buffptr so caller can kfree it
   if (buffer->full) {
+    evicted = buffer->entry[buffer->in_offs].buffptr;
     buffer->out_offs =
-        (buffer->in_offs + 1) % AESDCHAR_MAX_WRITE_OPERATIONS_SUPPORTED;
+        (buffer->out_offs + 1) % AESDCHAR_MAX_WRITE_OPERATIONS_SUPPORTED;
   }
-  // Write the new entry at the current in postion
+
+  // Write the new entry at the current in position
   buffer->entry[buffer->in_offs] = *add_entry;
-  // S3: Advance in_pffs, wrapping around the modulo
+
+  // Advance in_offs, wrapping around with modulo
   buffer->in_offs =
       (buffer->in_offs + 1) % AESDCHAR_MAX_WRITE_OPERATIONS_SUPPORTED;
 
-  // S4: If in caught up to out, buffer is full;
+  // If in caught up to out, buffer is full
   buffer->full = (buffer->in_offs == buffer->out_offs);
+
+  // Return evicted pointer (NULL if buffer wasn't full)
+  return evicted;
 }
 
 /**
